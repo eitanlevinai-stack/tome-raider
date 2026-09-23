@@ -1,0 +1,10 @@
+{
+  "title": "The Lessons of History",
+  "author": "Will Durant and Ariel Durant",
+  "year": "1968",
+  "voice": "af_heart",
+  "skip": ["^about will", "^guide to books"],
+  "append": {
+    "ch10": "Note. Some historians consider the age of the Antonines an unsuccessful rally in the decay of Rome."
+  }
+}

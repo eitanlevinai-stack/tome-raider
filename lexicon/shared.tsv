@@ -1,0 +1,107 @@
+# Pronunciation overrides for The Lessons of History.
+#
+# word <TAB> IPA <TAB> intended sound
+#
+# Applied as misaki inline overrides. Kokoro's notation: A=ay, I=eye,
+# O=oh, W=ow, Y=oy, T=flap t. Stress mark goes before the stressed
+# syllable. Matching is case-insensitive and covers possessives.
+#
+# Only entries Kokoro gets audibly wrong are listed; names it already
+# handles correctly (Thucydides, Nietzsche, Versailles, Machiavelli,
+# Xerxes, Charlemagne, Descartes, Euphrates, Haydn) are left alone.
+
+# --- philosophers and writers ---
+Goethe	ɡˈɜɹTə	GUR-tuh
+Hegel	hˈAɡəl	HAY-gul
+Engels	ˈɛŋɡəlz	ENG-gulz
+Spengler	spˈɛŋɡləɹ	SPENG-gler
+Cowper	kˈupəɹ	KOO-per
+Heracleitus	hˌɛɹəklˈITəs	herr-uh-KLY-tus
+Thrasymachus	θɹəsˈɪməkəs	thra-SIM-uh-kus
+Montesquieu	mˌɑntɛskjˈu	mon-tes-KYOO
+Diderot	dˌidəɹˈO	dee-duh-ROH
+Maistre	mˈɛstɹə	MEH-truh
+Renan	ɹənˈɑn	ruh-NAHN
+Péguy	pAɡˈi	pay-GHEE
+Cleland	klˈilənd	KLEE-land
+
+# --- popes, rulers, Romans ---
+Pius	pˈIəs	PY-us
+Marius	mˈæɹiəs	MA-ree-us
+Nero	nˈiɹO	NEE-roh
+Chephren	kˈɛfɹɛn	KEF-ren
+
+# --- French revolution and French terms ---
+Chaumette	ʃOmˈɛt	shoh-MET
+Desmoulins	dAmulˈæn	day-moo-LAN
+Hébert	Abˈɛɹ	ay-BAIR
+Rouvroy	ɹuvɹwˈɑ	roo-vrWAH
+Notre	nˈOtɹə	NOH-truh
+Loire	lwˈɑɹ	LWAHR
+Essai	ɛsˈA	eh-SAY
+
+# --- German terms ---
+Fuggers	fˈuɡəɹz	FOO-gers
+Grundlagen	ɡɹˈundlɑɡən	GROOND-lah-gen
+Jahrhunderts	jˈɑɹhˌundəɹts	YAHR-hoon-derts
+Treitschke	tɹˈIʧkə	TRYCH-kuh
+Münzer	mˈuntsəɹ	MUENT-ser
+Münster	mˈunstəɹ	MUEN-ster
+Dürer	dˈʊɹəɹ	DYOOR-er
+Holbein	hˈOlbIn	HOHL-byne
+Kapital	kˌɑpitˈɑl	kah-pee-TAHL
+Rothschilds	ɹˈɔθsʧIldz	ROTHS-childz
+
+# --- Italian and Spanish ---
+Domenico	dOmˈɛnɪkO	doh-MEN-ee-koh
+Palestrina	pˌæləstɹˈinə	pal-es-TREE-nuh
+Ariosto	ˌæɹiˈOstO	ah-ree-OH-stoh
+Málaga	mˈɑləɡə	MAH-lah-gah
+
+# --- Greek places ---
+Mytilene	mˌɪTɪlˈini	mit-ih-LEE-nee
+
+# --- Chinese ---
+Ch'ien	ʧjˈɛn	chyen
+Szuma	sˈumɑ	SOO-mah
+Liu	ljˈu	lyoo
+
+# --- other ---
+Madura	mədˈʊɹə	muh-DOO-ruh
+Tiphys	tˈIfɪs	TY-fis
+
+# --- French loanwords ---
+égalité	AɡˌalitˈA	ay-gal-ee-TAY
+naïve	nɑˈiv	nah-EEV
+François	fɹɑnswˈɑ	frahn-SWAH
+
+# --- Roman names (added while building SPQR) ---
+Barbatus	bɑɹbˈATəs	bar-BAY-tus
+Verres	vˈɛɹiz	VER-eez
+Mithradates	mˌɪθɹədˈATiz	mith-ruh-DAY-teez
+Aemilianus	ˌAmɪliˈAnəs	ay-mil-ee-AY-nus
+Cannae	kˈæni	KAN-ee
+Cato	kˈATO	KAY-toh
+Gestae	ɡˈɛstI	GES-tye
+Superbus	supˈɜɹbəs	soo-PER-bus
+Agrippa	əɡɹˈɪpə	uh-GRIP-uh
+Agrippina	ˌæɡɹɪpˈInə	ag-rih-PY-nuh
+Josephus	ʤOsˈifəs	joh-SEE-fus
+Metellus	mɛtˈɛləs	meh-TEL-us
+Romanus	ɹOmˈAnəs	roh-MAY-nus
+Antoninus	ˌæntOnˈInəs	an-toh-NY-nus
+Severus	səvˈɪɹəs	seh-VEER-us
+Trimalchio	tɹɪmˈælkiˌO	trih-MAL-kee-oh
+Togidubnus	tˌOɡɪdˈʌbnəs	toh-gih-DUB-nus
+Vivenna	vɪvˈɛnə	vih-VEN-uh
+Nasica	nəsˈikə	nuh-SEE-kuh
+Agricola	əɡɹˈɪkələ	uh-GRIK-uh-luh
+Arpinum	ɑɹpˈInəm	ar-PY-num
+Barates	bəɹˈATiz	buh-RAY-teez
+Catullus	kətˈʌləs	kuh-TUL-us
+Claudianus	klˌɔdiˈAnəs	klaw-dee-AY-nus
+Teos	tˈiɑs	TEE-os
+Vulci	vˈʌlʧi	VUL-chee
+Fulvia	fˈʌlviə	FULL-vee-uh
+Sulis	sˈulɪs	SOO-lis
+Dolabella	dˌɑləbˈɛlə	dol-uh-BEL-uh
