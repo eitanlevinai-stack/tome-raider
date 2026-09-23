@@ -1,15 +1,18 @@
-<h1>Tome Raider</h1>
+<p align="center">
+  <img src="tome-raider-banner.svg" width="820"
+       alt="Tome Raider. Your books. Out loud. No cloud. EPUB to chaptered M4B, locally.">
+</p>
 
-**Your books. Out loud. No cloud.**
+<p align="center">
+  <img src="https://img.shields.io/badge/licence-MIT-blue" alt="licence MIT">
+  <img src="https://img.shields.io/badge/python-3.10%2B-blue" alt="python 3.10+">
+  <img src="https://img.shields.io/badge/voice-Kokoro--82M-ff69b4" alt="voice Kokoro-82M">
+  <img src="https://img.shields.io/badge/runs-100%25%20local-brightgreen" alt="runs 100% local">
+  <img src="https://img.shields.io/badge/macOS%20%7C%20Linux-lightgrey" alt="macOS or Linux">
+</p>
 
 Drop an EPUB in, get a chaptered `.m4b` back. Everything happens on your
 laptop.
-
-![licence](https://img.shields.io/badge/licence-MIT-blue)
-![python](https://img.shields.io/badge/python-3.10%2B-blue)
-![tts](https://img.shields.io/badge/voice-Kokoro--82M-ff69b4)
-![local](https://img.shields.io/badge/runs-100%25%20local-brightgreen)
-![platform](https://img.shields.io/badge/macOS%20%7C%20Linux-lightgrey)
 
 ```bash
 mkdir -p books/my-book/book
