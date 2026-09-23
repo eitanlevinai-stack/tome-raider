@@ -325,7 +325,7 @@ path. It catches the failures that are otherwise silent.
 
 ## Licence
 
-MIT, see [LICENSE](LICENSE).
+MIT, see [LICENSE](LICENSE). Dependency terms are in [NOTICE](NOTICE).
 
 Kokoro-82M and misaki are Apache-2.0 by
 [hexgrad](https://github.com/hexgrad/kokoro), who deserve the credit for the

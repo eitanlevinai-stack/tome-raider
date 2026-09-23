@@ -19,25 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
----
-
-This licence covers the pipeline code in this repository. It does not cover
-the software it runs on, which carries its own terms:
-
-  Kokoro-82M          Apache-2.0   https://huggingface.co/hexgrad/Kokoro-82M
-  kokoro (library)    Apache-2.0   https://github.com/hexgrad/kokoro
-  misaki (G2P)        Apache-2.0   https://github.com/hexgrad/misaki
-  espeak-ng           GPL-3.0      https://github.com/espeak-ng/espeak-ng
-  phonemizer-fork     GPL-3.0      https://github.com/bootphon/phonemizer
-  ffmpeg              LGPL/GPL     https://ffmpeg.org
-
-espeak-ng and phonemizer are GPL-3.0 and Kokoro cannot phonemize English
-without them. They are installed separately by the user and are not
-distributed as part of this repository, which is why this code can be MIT
-licensed. If you intend to redistribute a bundle that includes them, take
-your own legal advice.
-
-Nothing here grants any rights in the books you feed it. Converting a book
-you own for your own listening is one thing; distributing the result is
-another, and copyright in the text is unaffected by having narrated it.
