@@ -72,10 +72,17 @@ sudo apt install espeak-ng ffmpeg      # Debian/Ubuntu
 understands. `ffmpeg` does the final encode.
 
 ```bash
-git clone <this repo> && cd tome-raider
+git clone https://github.com/eitanlevinai-stack/tome-raider.git
+cd tome-raider
+
 python3 -m venv .venv
-.venv/bin/pip install -r requirements.txt
+source .venv/bin/activate
+pip install -r requirements.txt
 ```
+
+The first install pulls PyTorch, so it takes a few minutes. Every `python`
+command below assumes that virtual environment is active; if you open a new
+terminal, `source .venv/bin/activate` again.
 
 Then feed it a book:
 
