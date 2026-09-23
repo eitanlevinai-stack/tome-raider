@@ -52,6 +52,9 @@ FRACTIONS = [(r"(?<=\d)\s+1/2\b", " and a half"),
 
 PAUSE_MARKS = "–—…"  # en dash, em dash, ellipsis
 
+# Only used to estimate finished length from a word count.
+WORDS_PER_MINUTE = 150
+
 ABBREVIATIONS = [
     (r"\bB\.\s*C\.(?:E\.)?", "B C"),
     # A bare "A" is swallowed as the article, so the letter is forced.
@@ -290,7 +293,8 @@ def extract(book: Book) -> int:
         print(f"  {out.name:<24}{words:>6} words  | {heading}")
         index += 1
 
-    print(f"  {index} sections, {total} words, ~{total / 147 / 60:.1f} h")
+    print(f"  {index} sections, {total} words, "
+          f"~{total / WORDS_PER_MINUTE / 60:.1f} h")
     return index
 
 

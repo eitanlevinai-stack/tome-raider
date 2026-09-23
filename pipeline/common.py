@@ -20,7 +20,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 BOOKS = ROOT / "books"
 BUILD = ROOT / "build"
-SHARED_LEXICON = ROOT / "lexicon" / "shared.tsv"
+LEXICON_DIR = ROOT / "lexicon"
 
 # Sections almost no audiobook wants read aloud. Matched case-insensitively
 # against the title the EPUB's own table of contents gives each section, so
@@ -100,8 +100,11 @@ class Book:
     def lexicon_rules(self) -> list[tuple[str, str]]:
         """Shared entries first, then the book's own, which win on conflict."""
         entries: dict[str, str] = {}
-        for path in (SHARED_LEXICON, self.dir / "lexicon.tsv"):
+        # Every .tsv in lexicon/ applies to every book, so a personal file
+        # can sit alongside the shared one without being committed.
+        for path in sorted(LEXICON_DIR.glob("*.tsv")):
             entries.update(read_lexicon(path))
+        entries.update(read_lexicon(self.dir / "lexicon.tsv"))
         return list(entries.items())
 
     def __repr__(self) -> str:

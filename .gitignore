@@ -10,3 +10,7 @@ samples/
 __pycache__/
 *.pyc
 .DS_Store
+
+# Personal lexicons: only shared.tsv is tracked.
+lexicon/*.tsv
+!lexicon/shared.tsv

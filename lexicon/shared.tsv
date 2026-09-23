@@ -1,107 +1,54 @@
-# Pronunciation overrides for The Lessons of History.
+# Pronunciation overrides applied to every book.
 #
-# word <TAB> IPA <TAB> intended sound
+# Kokoro never sees your letters, only phonemes. A name or loanword outside
+# its dictionary is guessed from English spelling rules, and the guess is
+# sometimes wrong. This file is where you correct those guesses once, for
+# every book you convert.
 #
-# Applied as misaki inline overrides. Kokoro's notation: A=ay, I=eye,
-# O=oh, W=ow, Y=oy, T=flap t. Stress mark goes before the stressed
-# syllable. Matching is case-insensitive and covers possessives.
+# FORMAT
 #
-# Only entries Kokoro gets audibly wrong are listed; names it already
-# handles correctly (Thucydides, Nietzsche, Versailles, Machiavelli,
-# Xerxes, Charlemagne, Descartes, Euphrates, Haydn) are left alone.
+#   word <TAB> IPA <TAB> intended sound
+#
+# Blank lines and lines starting with # are ignored. The third column is a
+# note to yourself in whatever spelling makes sense to you -- it is never
+# read by the pipeline, and it is what keeps the file reviewable without
+# having to parse IPA.
+#
+# Matching is case-insensitive and handles possessives, so one entry covers
+# "Ramirez" and "Ramirez's". It does not match across hyphens or inside
+# longer words.
+#
+# NOTATION
+#
+# Kokoro uses IPA with a few of its own vowel symbols:
+#
+#   A = "ay" as in day        I = "eye" as in time
+#   O = "oh" as in go         W = "ow" as in now
+#   Y = "oy" as in boy        T = flapped t, as in American "water"
+#
+# Put the stress mark ˈ immediately before the stressed syllable, and the
+# secondary stress mark ˌ before a lesser one.
+#
+# ADDING ENTRIES
+#
+#   1. python pipeline/extract.py <slug>
+#   2. python pipeline/probe_names.py <slug>
+#
+# probe_names.py lists every proper noun in the book with the phonemes it
+# will be given, commonest first, skipping anything already covered here.
+# Read it, and add a line for each one that is wrong.
+#
+# Put a name here if it is a real name with a fixed pronunciation, so the
+# next book you convert inherits it. Put it in books/<slug>/lexicon.tsv
+# instead if it is peculiar to one book -- an invented name, or a word that
+# book says differently.
+#
+# EXAMPLE
+#
+# Suppose probe_names.py shows a surname coming out with the stress on the
+# wrong syllable. Add:
+#
+#   Ramirez	ɹəmˈiɹɛz	ruh-MEE-rez
+#
+# Then re-run probe_names.py to confirm it no longer appears.
 
-# --- philosophers and writers ---
-Goethe	ɡˈɜɹTə	GUR-tuh
-Hegel	hˈAɡəl	HAY-gul
-Engels	ˈɛŋɡəlz	ENG-gulz
-Spengler	spˈɛŋɡləɹ	SPENG-gler
-Cowper	kˈupəɹ	KOO-per
-Heracleitus	hˌɛɹəklˈITəs	herr-uh-KLY-tus
-Thrasymachus	θɹəsˈɪməkəs	thra-SIM-uh-kus
-Montesquieu	mˌɑntɛskjˈu	mon-tes-KYOO
-Diderot	dˌidəɹˈO	dee-duh-ROH
-Maistre	mˈɛstɹə	MEH-truh
-Renan	ɹənˈɑn	ruh-NAHN
-Péguy	pAɡˈi	pay-GHEE
-Cleland	klˈilənd	KLEE-land
-
-# --- popes, rulers, Romans ---
-Pius	pˈIəs	PY-us
-Marius	mˈæɹiəs	MA-ree-us
-Nero	nˈiɹO	NEE-roh
-Chephren	kˈɛfɹɛn	KEF-ren
-
-# --- French revolution and French terms ---
-Chaumette	ʃOmˈɛt	shoh-MET
-Desmoulins	dAmulˈæn	day-moo-LAN
-Hébert	Abˈɛɹ	ay-BAIR
-Rouvroy	ɹuvɹwˈɑ	roo-vrWAH
-Notre	nˈOtɹə	NOH-truh
-Loire	lwˈɑɹ	LWAHR
-Essai	ɛsˈA	eh-SAY
-
-# --- German terms ---
-Fuggers	fˈuɡəɹz	FOO-gers
-Grundlagen	ɡɹˈundlɑɡən	GROOND-lah-gen
-Jahrhunderts	jˈɑɹhˌundəɹts	YAHR-hoon-derts
-Treitschke	tɹˈIʧkə	TRYCH-kuh
-Münzer	mˈuntsəɹ	MUENT-ser
-Münster	mˈunstəɹ	MUEN-ster
-Dürer	dˈʊɹəɹ	DYOOR-er
-Holbein	hˈOlbIn	HOHL-byne
-Kapital	kˌɑpitˈɑl	kah-pee-TAHL
-Rothschilds	ɹˈɔθsʧIldz	ROTHS-childz
-
-# --- Italian and Spanish ---
-Domenico	dOmˈɛnɪkO	doh-MEN-ee-koh
-Palestrina	pˌæləstɹˈinə	pal-es-TREE-nuh
-Ariosto	ˌæɹiˈOstO	ah-ree-OH-stoh
-Málaga	mˈɑləɡə	MAH-lah-gah
-
-# --- Greek places ---
-Mytilene	mˌɪTɪlˈini	mit-ih-LEE-nee
-
-# --- Chinese ---
-Ch'ien	ʧjˈɛn	chyen
-Szuma	sˈumɑ	SOO-mah
-Liu	ljˈu	lyoo
-
-# --- other ---
-Madura	mədˈʊɹə	muh-DOO-ruh
-Tiphys	tˈIfɪs	TY-fis
-
-# --- French loanwords ---
-égalité	AɡˌalitˈA	ay-gal-ee-TAY
-naïve	nɑˈiv	nah-EEV
-François	fɹɑnswˈɑ	frahn-SWAH
-
-# --- Classical and Roman names ---
-Barbatus	bɑɹbˈATəs	bar-BAY-tus
-Verres	vˈɛɹiz	VER-eez
-Mithradates	mˌɪθɹədˈATiz	mith-ruh-DAY-teez
-Aemilianus	ˌAmɪliˈAnəs	ay-mil-ee-AY-nus
-Cannae	kˈæni	KAN-ee
-Cato	kˈATO	KAY-toh
-Gestae	ɡˈɛstI	GES-tye
-Superbus	supˈɜɹbəs	soo-PER-bus
-Agrippa	əɡɹˈɪpə	uh-GRIP-uh
-Agrippina	ˌæɡɹɪpˈInə	ag-rih-PY-nuh
-Josephus	ʤOsˈifəs	joh-SEE-fus
-Metellus	mɛtˈɛləs	meh-TEL-us
-Romanus	ɹOmˈAnəs	roh-MAY-nus
-Antoninus	ˌæntOnˈInəs	an-toh-NY-nus
-Severus	səvˈɪɹəs	seh-VEER-us
-Trimalchio	tɹɪmˈælkiˌO	trih-MAL-kee-oh
-Togidubnus	tˌOɡɪdˈʌbnəs	toh-gih-DUB-nus
-Vivenna	vɪvˈɛnə	vih-VEN-uh
-Nasica	nəsˈikə	nuh-SEE-kuh
-Agricola	əɡɹˈɪkələ	uh-GRIK-uh-luh
-Arpinum	ɑɹpˈInəm	ar-PY-num
-Barates	bəɹˈATiz	buh-RAY-teez
-Catullus	kətˈʌləs	kuh-TUL-us
-Claudianus	klˌɔdiˈAnəs	klaw-dee-AY-nus
-Teos	tˈiɑs	TEE-os
-Vulci	vˈʌlʧi	VUL-chee
-Fulvia	fˈʌlviə	FULL-vee-uh
-Sulis	sˈulɪs	SOO-lis
-Dolabella	dˌɑləbˈɛlə	dol-uh-BEL-uh

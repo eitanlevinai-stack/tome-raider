@@ -52,7 +52,7 @@ def process(book: Book, args, pipelines) -> bool:
 
 def main() -> int:
     # Python block-buffers stdout when it is redirected to a file, which
-    # makes a five-hour run look hung. Progress should be watchable.
+    # makes a long run look hung. Progress should be watchable.
     sys.stdout.reconfigure(line_buffering=True)
 
     parser = argparse.ArgumentParser()

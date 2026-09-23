@@ -1,9 +1,0 @@
-# Per-book pronunciations, for names this book uses that the shared
-# lexicon does not cover. Same format as lexicon/shared.tsv:
-#
-#   word <TAB> IPA <TAB> intended sound
-#
-# Kokoro's notation: A=ay, I=eye, O=oh, W=ow, Y=oy. The third column is a
-# note to yourself so the file stays reviewable without reading IPA.
-#
-# Ch'ien	ʧjˈɛn	chyen

@@ -15,7 +15,7 @@ import sys
 from collections import Counter
 from pathlib import Path
 
-from common import Book, read_lexicon, SHARED_LEXICON
+from common import Book
 
 SYSTEM_WORDS = Path("/usr/share/dict/words")
 
@@ -43,8 +43,7 @@ def main() -> int:
 
     book = Book(args.slug)
     english = english_words()
-    known = set(k.lower() for k in read_lexicon(SHARED_LEXICON)) | \
-            set(k.lower() for k in read_lexicon(book.dir / "lexicon.tsv"))
+    known = {word.lower() for word, _ in book.lexicon_rules()}
 
     counts: Counter[str] = Counter()
     initial: Counter[str] = Counter()

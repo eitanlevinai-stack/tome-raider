@@ -108,16 +108,13 @@ def render(path: Path, out: Path, voice: str, pipeline, counter,
 def synth_book_isolated(book: Book, only: str | None = None) -> None:
     """Render each section in a fresh process.
 
-    Kokoro needs roughly a gigabyte while it runs, so on a small machine a
-    long book is one memory-hungry process among many. Handing each section
-    to its own process lets the OS reclaim everything in between, which
-    costs a few seconds of model loading and bounds what the render can
-    hold at once.
+    Kokoro holds a substantial working set while it runs, so on a long book
+    it is one memory-hungry process among many. Handing each section to its
+    own process lets the OS reclaim everything in between, which costs a few
+    seconds of model loading and bounds what the render holds at once.
 
-    It does not rescue a machine that is already out of memory. A 19-hour
-    book here went from RTF 0.21 to 3.96 once the system was into swap, and
-    a fresh process per chapter made no difference -- at that point the fix
-    is free memory, not tidier processes.
+    It does not create headroom that is not there. If the machine is already
+    short of memory the fix is to free some, not to tidy the processes.
     """
     files = sorted(book.text.glob("*.txt"))
     if only:
@@ -131,10 +128,9 @@ def synth_book_isolated(book: Book, only: str | None = None) -> None:
         render_section_watched(book, path)
 
 
-# A render that has stalled produces audio far slower than real time. Healthy
-# runs here sit near 5x; a stalled one fell to 0.25x and stayed there for
-# hours. Restarting the process has reliably restored full speed, so the
-# watchdog does that rather than waiting the stall out.
+# A stalled render does not fail -- it keeps producing audio, just far slower
+# than real time, and does not recover on its own. Restarting the process
+# clears it, so the watchdog does that rather than waiting the stall out.
 STALL_RATE = 1.0        # x realtime, below which a render counts as stalled
 STALL_CHECKS = 3        # consecutive slow samples before restarting
 CHECK_SECONDS = 60

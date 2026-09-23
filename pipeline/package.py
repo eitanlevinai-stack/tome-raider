@@ -18,7 +18,7 @@ from common import Book, all_books
 # 24 kHz mono speech; 64k AAC is transparent for this material.
 BITRATE = "64k"
 
-# Kokoro renders around -25 LUFS, which is quiet for listening. EBU R128
+# Kokoro renders quieter than is comfortable to listen to. EBU R128
 # normalisation lifts it to the usual audiobook target with 3 dB of headroom.
 LOUDNORM = "loudnorm=I=-20:TP=-3:LRA=11"
 
