@@ -13,7 +13,19 @@ Layout, one directory per book:
 
 import json
 import re
+import sys
 from pathlib import Path
+
+# Checked before anything else imports: on an older interpreter the failure
+# is otherwise a missing-module error or a TypeError on a type annotation,
+# neither of which points at the real problem.
+if sys.version_info < (3, 10):
+    sys.exit(
+        f"This needs Python 3.10 or newer; this is {sys.version.split()[0]}.\n"
+        "macOS ships 3.9, so `python3 -m venv` picks the wrong one. Install a\n"
+        "newer Python (brew install python@3.12) and build the environment\n"
+        "with it: python3.12 -m venv .venv"
+    )
 
 # The scripts live in pipeline/; books, build and lexicon sit beside it at
 # the project root.

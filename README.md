@@ -61,22 +61,25 @@ parameters!
 
 ## Getting started
 
-Python 3.10+, plus:
-
 ```bash
-brew install espeak-ng ffmpeg          # macOS
-sudo apt install espeak-ng ffmpeg      # Debian/Ubuntu
+brew install python@3.12 espeak-ng ffmpeg          # macOS
+sudo apt install python3.12-venv espeak-ng ffmpeg  # Debian/Ubuntu
 ```
 
 `espeak-ng` turns letters into phonemes, which is the only thing Kokoro
 understands. `ffmpeg` does the final encode.
 
+Python 3.10 or newer matters here, and it is the step people trip on: macOS
+still ships 3.9 as `python3`, and Kokoro has no installable build for it. Name
+the version explicitly when you make the environment.
+
 ```bash
 git clone https://github.com/eitanlevinai-stack/tome-raider.git
 cd tome-raider
 
-python3 -m venv .venv
+python3.12 -m venv .venv
 source .venv/bin/activate
+python --version          # expect 3.12.x
 pip install -r requirements.txt
 ```
 
