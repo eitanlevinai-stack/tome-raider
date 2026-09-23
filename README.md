@@ -9,7 +9,7 @@ frontend will mispronounce.
 
 ```bash
 cp mybook.epub books/my-book/book/
-python run.py
+python pipeline/run.py
 # → books/my-book/audiobook/My Book.m4b
 ```
 
@@ -59,10 +59,10 @@ books/<slug>/lexicon.tsv             optional pronunciations
 ```
 
 ```bash
-python run.py                  # every book with no .m4b yet
-python run.py my-book          # just one
-python run.py --force          # rebuild one already done
-python run.py --keep-wavs      # keep intermediates
+python pipeline/run.py                  # every book with no .m4b yet
+python pipeline/run.py my-book          # just one
+python pipeline/run.py --force          # rebuild one already done
+python pipeline/run.py --keep-wavs      # keep intermediates
 ```
 
 Every stage is resumable. Completed chapters are kept, and an interrupted
@@ -76,14 +76,14 @@ they cost ten minutes and save you finding out at hour nine.
 ### 1. Check what it decided to narrate
 
 ```bash
-python extract.py my-book
+python pipeline/extract.py my-book
 ```
 
 Reading order and chapter titles come from the EPUB's own table of contents,
 not from any publisher's markup, and **a spine document the TOC omits is
 treated as front matter**. That one rule removes covers, adverts, signup
 pages, indexes and navigation across every publisher tried so far. Titles
-matching the skip list in `common.py` (index, notes, bibliography,
+matching the skip list in `pipeline/common.py` (index, notes, bibliography,
 illustrations, "praise for…") go too.
 
 Read the output. If a chapter is missing or an index survived, fix it with
@@ -92,7 +92,7 @@ Read the output. If a chapter is missing or an index survived, fix it with
 ### 2. Check the names
 
 ```bash
-python probe_names.py my-book
+python pipeline/probe_names.py my-book
 ```
 
 This is where quality in non-fiction is won or lost. Kokoro never sees your
@@ -105,7 +105,7 @@ works for some and mangles others:
 | already correct | Thucydides, Nietzsche, Versailles, Machiavelli, Xerxes, Charlemagne |
 | wrong by default | Goethe → "GOHTH", Hegel → "HEJ-ul", Engels → "EN-julz", Cowper → "KOW-per" |
 
-`probe_names.py` prints every proper noun with the phonemes it will get.
+`pipeline/probe_names.py` prints every proper noun with the phonemes it will get.
 Skim it, and put anything wrong in a lexicon:
 
 ```
@@ -148,7 +148,7 @@ Kokoro's set is materially worse — the grades are in the model's
 ## Checking a finished book
 
 ```bash
-python verify.py my-book
+python pipeline/verify.py my-book
 ```
 
 Compares each section's duration against its word count — a dropped chunk
@@ -158,10 +158,10 @@ words-per-minute, because pace varies by book and voice.
 
 ```bash
 ffmpeg -ss 08:00:00 -t 00:20:00 -i book.m4b -ar 24000 -ac 1 /tmp/x.wav
-python inspect_joins.py /tmp/x.wav
+python pipeline/inspect_joins.py /tmp/x.wav
 ```
 
-`inspect_joins.py` measures what a bad chunk join looks like mechanically: a
+`pipeline/inspect_joins.py` measures what a bad chunk join looks like mechanically: a
 pause far longer than the ones the pipeline inserts, or a sudden level step
 across one. A healthy stretch shows the deliberate pauses and nothing else —
 median near the 0.55 s paragraph gap, little past the 1.1 s heading gap, no
@@ -174,6 +174,13 @@ committing to the whole thing.
 ## How it works
 
 ```
+pipeline/            the code
+lexicon/shared.tsv   pronunciations applied to every book
+books/<slug>/        one directory per book, created by you
+build/<slug>/        intermediates, safe to delete
+```
+
+```
 books/<slug>/book/*.epub
   │
   ├─ extract.py      EPUB → text, one file per section
@@ -182,9 +189,10 @@ books/<slug>/book/*.epub
   └─ package.py      → chaptered, loudness-normalised .m4b
 ```
 
-`run.py` chains them; each also runs standalone against a slug.
+`pipeline/run.py` chains them; each also runs standalone against a slug.
+All commands are run from the project root.
 
-**Text normalisation** is most of `extract.py`. Superscript note markers are
+**Text normalisation** is most of `pipeline/extract.py`. Superscript note markers are
 removed as whole elements (left in, the bare digit gets spoken mid-sentence).
 Roman numeral headings become "Chapter Three"; regnal numbers become
 "Gregory the Seventh" rather than "Gregory vee eye eye". `B.C.`, `A.D.`,
@@ -204,7 +212,7 @@ about 30 MB per hour.
 
 **Renders slow down partway through a long book.** Healthy is around 5×
 real time. A stalled render does not fail — it keeps producing audio about
-twenty times too slowly. `synth.py` samples each section's rate once a
+twenty times too slowly. `pipeline/synth.py` samples each section's rate once a
 minute and restarts a section that stays below threshold, which has
 reliably restored full speed; thresholds are constants at the top of the
 file. Why restarting helps is not established: it is not a cross-chapter
@@ -224,7 +232,7 @@ sysctl vm.swapusage
 
 **A name is still wrong after a lexicon entry.** Entries are matched
 case-insensitively with possessives handled, but not across hyphens or
-inside other words. Check `probe_names.py` output again — it skips names
+inside other words. Check `pipeline/probe_names.py` output again — it skips names
 already covered.
 
 ## Licence

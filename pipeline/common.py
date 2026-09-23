@@ -15,7 +15,9 @@ import json
 import re
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent
+# The scripts live in pipeline/; books, build and lexicon sit beside it at
+# the project root.
+ROOT = Path(__file__).resolve().parent.parent
 BOOKS = ROOT / "books"
 BUILD = ROOT / "build"
 SHARED_LEXICON = ROOT / "lexicon" / "shared.tsv"
