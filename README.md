@@ -22,6 +22,14 @@ python pipeline/run.py
 
 Go and make tea. It'll be a chaptered audiobook when you get back.
 
+## Hear it first
+
+[**sample.m4a**](sample.m4a) is a minute of Gibbon's *Decline and Fall*,
+rendered by this pipeline in the default voice, untouched afterwards. Nerva,
+Trajan, Hadrian and the Antonines all came out right without a lexicon
+entry, which is the usual case for names that English already knows what to
+do with.
+
 ## Why this exists
 
 You own the book. You'd listen to it if somebody had bothered to record it.
