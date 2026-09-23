@@ -17,26 +17,23 @@ cp mybook.epub books/my-book/book/
 python pipeline/run.py
 ```
 
-That's the whole interface. Go make tea; it'll be a chaptered audiobook when
-you get back.
-
----
+Go and make tea. It'll be a chaptered audiobook when you get back.
 
 ## Why this exists
 
 You own the book. You'd listen to it if somebody had bothered to record it.
-Nobody did, or they did and it costs another twenty quid, or it exists but
-only in a format that phones home about what page you're on.
+Sometimes nobody has. Sometimes the recording exists, costs another twenty
+quid, and reports back about what page you're on.
 
-So: a small model, your own CPU, and about forty minutes per three hours of
-audiobook.
+So this runs a small model on your own CPU instead. Three hours of audiobook
+takes about forty minutes.
 
 ## Why Kokoro
 
 Most modern text-to-speech works like a language model, predicting audio one
-token at a time. That's how they clone a voice from five seconds of you, and
-it's also how they occasionally wander off, repeat a clause, or quietly drop
-a sentence somewhere in hour nine.
+token at a time. That's how they clone a voice from five seconds of you. It's
+also how they sometimes wander off and repeat a clause, or lose a sentence
+somewhere in hour nine.
 
 [Kokoro](https://huggingface.co/hexgrad/Kokoro-82M) works differently. It
 figures out how long everything should take, then renders it in one pass.
@@ -44,9 +41,9 @@ What's on the page is what comes out, chapter one to chapter forty. Its
 voices are frozen tensors, so the narrator you start with is the narrator you
 finish with.
 
-Voice cloning lives in a different kind of model. This one arrives with 54
-voices and gets straight to work, at 82M parameters, on a laptop, several
-times faster than real time.
+Voice cloning belongs to a different kind of model. This one ships with 54
+voices and runs several times faster than real time on a laptop, at 82M
+parameters.
 
 ## Getting started
 
@@ -106,7 +103,7 @@ Each stage runs on its own if you'd rather drive manually. Everything is
 resumable: finished chapters stay finished, and a chapter interrupted
 halfway leaves a `.part` file that the next run knows to redo.
 
-## The two minutes that save you three hours
+## Before you commit an evening to it
 
 ### Look at what it plans to read
 
@@ -124,9 +121,9 @@ my-book
 
 Chapter order and titles come from the book's own table of contents, and
 anything the TOC leaves out gets treated as front matter. That one rule
-quietly disposes of covers, adverts, newsletter signup pages and navigation
-stubs across most publishers. Indexes, bibliographies and lists of
-illustrations go too.
+disposes of covers, adverts, newsletter signup pages and navigation stubs
+across most publishers. Indexes, bibliographies and lists of illustrations
+go the same way.
 
 Glance at the list. If something's missing or something odd survived, a
 `skip` or `keep` regex in `book.json` sorts it.
@@ -148,9 +145,9 @@ $ python pipeline/probe_names.py my-book
    9x  Siobhan                  ʃɪvˈɔn
 ```
 
-Two of those are fine. The other two are "FEATH-er-stone-haw" and
+Two of those are fine. The other two come out as "FEATH-er-stone-haw" and
 "BOH-champ", and anyone who has met an English surname knows they should be
-**FAN-shaw** and **BEECH-am**.
+FAN-shaw and BEECH-am.
 
 Teach it, once:
 
@@ -164,16 +161,16 @@ lexicon/*.tsv               every book you ever convert
 books/<slug>/lexicon.tsv    just this one
 ```
 
-The third column is a note to yourself in whatever spelling makes sense —
-the pipeline ignores it, and it's what lets you review the file six months
-later without deciphering IPA. Kokoro's vowels: `A`=ay, `I`=eye, `O`=oh,
-`W`=ow, `Y`=oy. `lexicon/shared.tsv` has the full tour.
+The third column is a note to yourself in whatever spelling makes sense. The
+pipeline ignores it, and it's what lets you review the file six months later
+without deciphering IPA. Kokoro's vowels: `A`=ay, `I`=eye, `O`=oh, `W`=ow,
+`Y`=oy. `lexicon/shared.tsv` has the full tour.
 
 Names repeat. One line here often fixes several hundred utterances.
 
 ## Settings
 
-`book.json` is optional — title, author and year come from the EPUB unless
+`book.json` is optional. Title, author and year come from the EPUB unless
 you'd rather they didn't.
 
 ```json
@@ -201,9 +198,10 @@ you'd rather they didn't.
 | `require_toc` | treat anything the TOC omits as front matter |
 | `append` | extra text spoken at the end of a section, for a footnote worth hearing |
 
-**Voices.** `af_heart` is the default and the best-graded of the set;
-`af_bella` is the closest alternative and `bm_fable` reads British. The
-model's
+### Voices
+
+`af_heart` is the default and the best-graded of the set. `af_bella` is the
+closest alternative, and `bm_fable` reads British. The model's
 [VOICES.md](https://huggingface.co/hexgrad/Kokoro-82M/blob/main/VOICES.md)
 grades all 54.
 
@@ -239,16 +237,14 @@ x.wav: 20.0 min, 325 pauses
 ```
 
 Healthy output looks like the pauses the pipeline meant to put there and
-very little else.
-
-After that it's over to your ears. Give a few minutes of a long chapter a
-listen before you commit an evening to it — a machine can measure where the
-seams are, and you can hear whether they land somewhere graceful.
+very little else. After that it's over to your ears: give a few minutes of a
+long chapter a listen before you commit the evening. The tools can measure
+where the seams are, and you're the one who can tell whether they land well.
 
 ## FAQ
 
 **Can it read in my voice?**
-Not this model — Kokoro's voices are fixed, which is the same property that
+Not this one. Kokoro's voices are fixed, which is the same property that
 keeps the narrator steady across a fourteen-hour book. If your heart is set
 on it, render with Kokoro and run the output through a voice-conversion
 model afterwards; that keeps the steady delivery and swaps the timbre.
@@ -258,7 +254,7 @@ Several times faster than real time on a recent laptop. A three-hour
 audiobook lands in well under an hour.
 
 **Do I need a GPU?**
-No. 82M parameters is small enough that CPU is genuinely fine.
+No. 82M parameters is small enough that CPU is fine.
 
 **Windows?**
 The Python side is portable, but the paths and the `brew`/`apt` instructions
@@ -267,8 +263,8 @@ welcome PR.
 
 **Other languages?**
 Kokoro speaks eight. This pipeline currently talks American English, and its
-text tidying assumes it. Opening that up is a genuinely good first
-contribution — see below.
+text tidying assumes it. Opening that up is a good first contribution; see
+below.
 
 **PDFs? MOBI? AZW3?**
 EPUB today. Calibre converts most things to EPUB in one command, which is
@@ -283,41 +279,40 @@ copyright in the text stays exactly where it was.
 A stalled render keeps going, just far too slowly, and it doesn't pick itself
 back up. `synth.py` watches each chapter's output rate and restarts one
 that's fallen behind; thresholds are at the top of the file. If it keeps
-happening, look at free memory — Kokoro wants a decent working set, and
-things get sticky once the machine starts swapping.
+happening, look at free memory. Kokoro wants a decent working set, and things
+get sticky once the machine starts swapping.
 
 **Nothing came out of `extract.py`.**
 The EPUB's table of contents is probably missing or malformed. Set
 `"require_toc": false` and let the skip list do the work instead.
 
 **I added a lexicon entry and the name is still wrong.**
-Entries match whole words, case-insensitively, and handle possessives — but
-not across hyphens or inside longer words. Re-run `probe_names.py`; it hides
-names already covered, so anything still listed hasn't matched yet.
+Entries match whole words, case-insensitively, and handle possessives,
+though not across hyphens or inside longer words. Re-run `probe_names.py`;
+it hides names already covered, so anything still listed hasn't matched yet.
 
 ## Contributing
 
 Small and welcome:
 
-- **A lexicon entry.** Ran into a name Kokoro mangles? Add it to
-  `lexicon/shared.tsv` with the sound written out in the third column, and
-  everyone's next book benefits.
-- **A publisher that extracts badly.** If a book comes out with adverts
-  narrated or chapters missing, that's a rule worth adding. The interesting
-  part is the EPUB's structure, not the book itself.
+- Ran into a name Kokoro mangles? Add it to `lexicon/shared.tsv` with the
+  sound written out in the third column, and everyone's next book benefits.
+- If a book comes out with adverts narrated or chapters missing, that's a
+  rule worth adding. The interesting part is the EPUB's structure rather
+  than the book itself.
 
 Bigger and also welcome:
 
-- **Another language.** `lang_code` is pinned to American English in a
-  handful of places, and `extract.py`'s normalisation rules are
-  English-shaped. Both are tractable.
-- **Windows support.** Mostly paths and install docs.
-- **Better chunking.** Chunks currently aim for the 100–200 phoneme window
+- Another language. `lang_code` is pinned to American English in a handful
+  of places, and `extract.py`'s normalisation rules are English-shaped. Both
+  are tractable.
+- Windows support, which is mostly paths and install docs.
+- Better chunking. Chunks currently aim for the 100 to 200 phoneme window
   the model card recommends, split on sentence boundaries. Clause-aware
   splitting could make the seams sit better.
 
 Run `pipeline/verify.py` on a book before and after any change to the audio
-path — it catches the failures that are otherwise silent.
+path. It catches the failures that are otherwise silent.
 
 ## Licence
 
