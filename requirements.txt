@@ -1,0 +1,21 @@
+# Python 3.10 or newer.
+#
+# Two system packages are needed as well, and pip will not install them:
+#
+#   macOS    brew install espeak-ng ffmpeg
+#   Debian   apt install espeak-ng ffmpeg
+#
+# espeak-ng does the grapheme-to-phoneme work Kokoro depends on; ffmpeg
+# encodes the finished .m4b.
+
+kokoro>=0.9.4
+soundfile>=0.13
+numpy>=2.0
+
+# Pulled in by kokoro, pinned here because the pipeline reads phonemes
+# directly and is sensitive to how misaki spells them.
+misaki>=0.9.4
+
+# Torch is a kokoro dependency. CPU builds are fine; the pipeline never
+# assumes a GPU.
+torch>=2.5

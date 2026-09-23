@@ -1,66 +1,115 @@
-# EPUB to audiobook
+# epub2audiobook
 
-Turns EPUBs into chaptered `.m4b` audiobooks with [Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M),
-locally, on Apple Silicon.
+Turn an EPUB into a chaptered `.m4b` audiobook on your own machine, using
+[Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M).
 
-Kokoro is non-autoregressive, so unlike LLM-based TTS it cannot hallucinate,
-skip a sentence, or let the narrator's voice drift over a long book. The
-tradeoff is that it cannot clone a voice — you pick from its 54.
-
-## Adding a book
-
-```
-books/<slug>/book/whatever.epub
-```
-
-That is the only required step. Then:
+Built for non-fiction — history, philosophy, science — where the hard part
+is not the synthesis but the hundreds of proper nouns a text-to-speech
+frontend will mispronounce.
 
 ```bash
-python run.py                    # build every book that has no m4b yet
-python run.py <slug>             # just one
-python run.py --force            # rebuild something already built
+cp mybook.epub books/my-book/book/
+python run.py
+# → books/my-book/audiobook/My Book.m4b
 ```
 
-Output lands in `books/<slug>/audiobook/`. Intermediates go to
-`build/<slug>/` and are deleted after packaging unless you pass
-`--keep-wavs`.
+## Why Kokoro
 
-## Stages
+Kokoro is **non-autoregressive**. It predicts durations and decodes in one
+pass, so unlike LLM-based text-to-speech it cannot hallucinate a sentence,
+skip a clause, or let the narrator's voice drift over eighteen hours. Its
+voices are frozen style vectors — chapter one and chapter four hundred use
+the identical tensor.
 
-`run.py` chains these; each also runs standalone against a slug.
+The cost of that is no voice cloning. You pick from its 54 voices or you
+use something else. For long-form narration it is usually the right trade:
+a voice that never wanders beats a voice that could have been yours.
 
-| | |
-|---|---|
-| `extract.py` | EPUB → `build/<slug>/text/*.txt` |
-| `probe_names.py` | how Kokoro will say each proper noun |
-| `synth.py` | text → `build/<slug>/audio/*.wav` |
-| `verify.py` | catches dropped chunks, clipping, silence |
-| `package.py` | → chaptered, loudness-normalised `.m4b` |
-| `inspect_joins.py` | pause and level analysis on finished audio |
+At 82M parameters it runs comfortably on a laptop CPU, around **5× faster
+than real time** on Apple Silicon — a three-hour book in about forty
+minutes.
 
-Every stage is resumable. `synth.py` skips sections already rendered, so an
-interrupted run loses only the section in flight.
+## Requirements
+
+- Python 3.10+
+- `espeak-ng` — grapheme-to-phoneme, which Kokoro depends on
+- `ffmpeg` — encodes the finished `.m4b`
+
+```bash
+brew install espeak-ng ffmpeg          # macOS
+sudo apt install espeak-ng ffmpeg      # Debian/Ubuntu
+
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+```
+
+English only at present. Kokoro supports eight languages, but this pipeline
+hardcodes American English (`lang_code="a"`) and its normalisation rules
+assume it.
+
+## Usage
+
+One directory per book. Drop in an EPUB and run:
+
+```
+books/<slug>/book/anything.epub      you provide this
+books/<slug>/audiobook/*.m4b         the result
+books/<slug>/book.json               optional settings
+books/<slug>/lexicon.tsv             optional pronunciations
+```
+
+```bash
+python run.py                  # every book with no .m4b yet
+python run.py my-book          # just one
+python run.py --force          # rebuild one already done
+python run.py --keep-wavs      # keep intermediates
+```
+
+Every stage is resumable. Completed chapters are kept, and an interrupted
+one leaves only a `.part` file — never a short chapter that looks finished.
 
 ## Getting a good result
 
-**Reading order and titles come from the EPUB's own table of contents.** A
-spine document the TOC does not list is treated as publisher matter and
-dropped — that alone removes covers, ads, signup pages and navigation across
-every publisher tried so far. Titles matching `common.SKIP_TITLES` (index,
-notes, bibliography, illustrations, praise-for…) go too.
+Two checks before committing to a long render. On an eighteen-hour book
+they cost ten minutes and save you finding out at hour nine.
 
-**Check the section list before rendering.** Run `extract.py <slug>` on its
-own and read the output. Nineteen hours of audio is a long time to discover
-you narrated the index.
+### 1. Check what it decided to narrate
 
-**Then check the names.** `probe_names.py <slug>` prints every proper noun
-with its phonemes. This is where quality is won or lost in non-fiction —
-Kokoro guesses non-English names from English spelling rules and gets
-Goethe, Hegel and Engels wrong, while handling Thucydides, Nietzsche and
-Versailles correctly. Fix what is wrong in a lexicon:
+```bash
+python extract.py my-book
+```
+
+Reading order and chapter titles come from the EPUB's own table of contents,
+not from any publisher's markup, and **a spine document the TOC omits is
+treated as front matter**. That one rule removes covers, adverts, signup
+pages, indexes and navigation across every publisher tried so far. Titles
+matching the skip list in `common.py` (index, notes, bibliography,
+illustrations, "praise for…") go too.
+
+Read the output. If a chapter is missing or an index survived, fix it with
+`skip` / `keep` in `book.json`.
+
+### 2. Check the names
+
+```bash
+python probe_names.py my-book
+```
+
+This is where quality in non-fiction is won or lost. Kokoro never sees your
+letters, only phonemes, so every mispronunciation is a frontend problem.
+Names outside its dictionary get guessed from English spelling rules, which
+works for some and mangles others:
+
+| | |
+|---|---|
+| already correct | Thucydides, Nietzsche, Versailles, Machiavelli, Xerxes, Charlemagne |
+| wrong by default | Goethe → "GOHTH", Hegel → "HEJ-ul", Engels → "EN-julz", Cowper → "KOW-per" |
+
+`probe_names.py` prints every proper noun with the phonemes it will get.
+Skim it, and put anything wrong in a lexicon:
 
 ```
-lexicon/shared.tsv          real names, reused by every book
+lexicon/shared.tsv          real names, applied to every book
 books/<slug>/lexicon.tsv    anything peculiar to one book
 ```
 
@@ -68,105 +117,120 @@ Format is `word<TAB>IPA<TAB>intended sound`. The third column is a note to
 yourself, so the file stays reviewable without reading IPA. Kokoro's
 notation: `A`=ay, `I`=eye, `O`=oh, `W`=ow, `Y`=oy.
 
-## book.json
+The repository ships a starter `lexicon/shared.tsv` of ~100 entries built
+while narrating a Roman history and a philosophy of history — European
+philosophers, classical figures, French and German loanwords. Non-fiction
+repeats its vocabulary relentlessly, so one entry can fix four hundred
+utterances.
 
-Optional, per book. Title, author and year default to the EPUB's metadata.
+## Configuration
 
-```json
-{
-  "title": "The Lessons of History",
-  "author": "Will Durant and Ariel Durant",
-  "year": "1968",
-  "voice": "af_heart",
-  "speed": 1.0,
-  "skip": ["^about will"],
-  "keep": [],
-  "strip_tables": true,
-  "require_toc": true,
-  "append": {"ch10": "Note. Some historians consider..."}
-}
-```
+`book.json` is optional; title, author and year default to the EPUB's own
+metadata. See `examples/book.json`.
 
-`skip` and `keep` are regex matched against TOC titles; `keep` overrides the
-built-in skip list. `append` speaks extra text at the end of a section, for
-a footnote worth keeping.
+| key | meaning |
+|---|---|
+| `title` `author` `year` | M4B metadata |
+| `voice` | Kokoro voice id, default `af_heart` |
+| `speed` | 1.0 is ~150 wpm, standard audiobook pace |
+| `skip` / `keep` | regexes matched against TOC titles; `keep` overrides the built-in skip list |
+| `strip_tables` | drop tables, which read as noun soup once flattened |
+| `require_toc` | treat spine documents the TOC omits as front matter |
+| `append` | speak extra text at the end of a section, for a footnote worth keeping |
 
-## Voices
+### Voices
 
-`af_heart` (grade A) is the default and the best of them. `af_bella` (A-) is
-the closest alternative, `bm_fable` the British option, a little faster.
-Everything else in Kokoro's set is materially worse — the grades are in the
-model's [VOICES.md](https://huggingface.co/hexgrad/Kokoro-82M/blob/main/VOICES.md).
-
-## What it costs
-
-Roughly **0.28 real-time on an M1** — a 3-hour book renders in about 50
-minutes, a 19-hour book in about five and a half. Intermediate WAVs run
-~160 MB per hour of audio, so `--clean` (the default) matters at scale.
-Output is 64 kbps mono AAC at −20 LUFS, about 30 MB per hour.
-
-## Memory
-
-Kokoro holds about a gigabyte while rendering, and sections run in separate
-processes so nothing accumulates across a book. That bounds what the
-pipeline itself uses; it does not create headroom that is not there.
-
-On an 8 GB machine a long book needs the memory to actually be free. A
-19-hour book rendered at RTF 0.21 until the system ran out and went into
-swap, then collapsed to RTF 3.96 — roughly twenty times slower. If
-throughput falls off partway through a long book, check free memory before
-anything else:
-
-```bash
-vm_stat | head -4        # "Pages free" in 16 KB pages
-sysctl vm.swapusage
-```
-
-Renders are resumable, so the fix is to close what else is running and rerun
-`run.py <slug>`. Completed chapters are kept and an interrupted one leaves
-only a `.part` file, never a short chapter that looks finished.
-
-## The stall watchdog
-
-A stalled render does not fail — it keeps producing audio, just twenty times
-too slowly. One chapter here spent 2h14m on 35 minutes of audio; a restarted
-process did the whole chapter in 15 minutes. Another spent 17.5 hours
-reaching 81 of 96 minutes, then finished in 19 minutes after a restart.
-
-Why restarting helps is not settled. It was not a cross-chapter leak (fresh
-processes stalled too) and not duration-dependent (a 3,000-word section
-stalled as readily as a 15,000-word one). What is reproducible is the
-remedy, so `synth.py` acts on that: it samples each section's output rate
-once a minute, and after `STALL_CHECKS` consecutive samples below
-`STALL_RATE` × realtime it kills and restarts that section. The last of
-`MAX_ATTEMPTS` runs unwatched, since finishing slowly beats looping.
-
-Healthy is around 5× realtime. Thresholds are constants at the top of
-`synth.py`.
+`af_heart` (grade A) is the default and the best of them; `af_bella` (A−) is
+the closest alternative and `bm_fable` the British option. The rest of
+Kokoro's set is materially worse — the grades are in the model's
+[VOICES.md](https://huggingface.co/hexgrad/Kokoro-82M/blob/main/VOICES.md).
 
 ## Checking a finished book
 
-`verify.py` compares each section's duration against its word count, which
-catches dropped chunks, and checks levels for clipping. Neither it nor
-anything else here can judge **prosody** — odd stress, or a chunk boundary
-falling somewhere awkward.
+```bash
+python verify.py my-book
+```
 
-`inspect_joins.py` gets closer by measuring what a bad join looks like
-mechanically: a pause far longer than the ones the pipeline inserts, or a
-sudden level step across one.
+Compares each section's duration against its word count — a dropped chunk
+shows up as a section out of line with its neighbours — and checks levels
+for clipping. It calibrates to the book's own pace rather than a fixed
+words-per-minute, because pace varies by book and voice.
 
 ```bash
 ffmpeg -ss 08:00:00 -t 00:20:00 -i book.m4b -ar 24000 -ac 1 /tmp/x.wav
 python inspect_joins.py /tmp/x.wav
 ```
 
-A healthy stretch looks like the deliberate pauses and nothing else — median
-near the 0.55 s paragraph gap, almost nothing past the 1.1 s heading gap, and
-no level steps. Anything beyond that is worth listening to.
+`inspect_joins.py` measures what a bad chunk join looks like mechanically: a
+pause far longer than the ones the pipeline inserts, or a sudden level step
+across one. A healthy stretch shows the deliberate pauses and nothing else —
+median near the 0.55 s paragraph gap, little past the 1.1 s heading gap, no
+level steps.
 
-## Limits
+**Neither tool can judge prosody** — odd stress, or a chunk boundary landing
+somewhere awkward. Listen to a few minutes of a long chapter before
+committing to the whole thing.
 
-`verify.py` checks duration and levels, which catches dropped chunks and
-clipping. Nothing here checks **prosody** — an oddly stressed sentence or an
-awkward chunk join only shows up on playback. Spot-check a few minutes of a
-long chapter before committing to a whole book.
+## How it works
+
+```
+books/<slug>/book/*.epub
+  │
+  ├─ extract.py      EPUB → text, one file per section
+  ├─ synth.py        text → 24 kHz WAV, one process per section
+  ├─ verify.py       duration and level checks
+  └─ package.py      → chaptered, loudness-normalised .m4b
+```
+
+`run.py` chains them; each also runs standalone against a slug.
+
+**Text normalisation** is most of `extract.py`. Superscript note markers are
+removed as whole elements (left in, the bare digit gets spoken mid-sentence).
+Roman numeral headings become "Chapter Three"; regnal numbers become
+"Gregory the Seventh" rather than "Gregory vee eye eye". `B.C.`, `A.D.`,
+`i.e.`, `e.g.` and `d.` are expanded, which also stops their full stops
+creating false sentence boundaries. Dashes and ellipses become spoken
+pauses. Print-edition cross-references like `(see pp. 241–2)` are dropped.
+
+**Chunking** targets the 100–200 phoneme-token window the model card calls
+its goldilocks range — shorter and delivery goes flat, longer and it audibly
+rushes. Sentences are never split mid-clause, since that is where a join is
+most obvious.
+
+**Output** is 64 kbps mono AAC at −20 LUFS, the usual audiobook target,
+about 30 MB per hour.
+
+## Troubleshooting
+
+**Renders slow down partway through a long book.** Healthy is around 5×
+real time. A stalled render does not fail — it keeps producing audio about
+twenty times too slowly. `synth.py` samples each section's rate once a
+minute and restarts a section that stays below threshold, which has
+reliably restored full speed; thresholds are constants at the top of the
+file. Why restarting helps is not established: it is not a cross-chapter
+leak, and it is not duration-dependent. If it persists, check free memory —
+Kokoro needs about a gigabyte, and on an 8 GB machine a long book will
+stall once the system is into swap.
+
+```bash
+vm_stat | head -4          # "Pages free", in 16 KB pages
+sysctl vm.swapusage
+```
+
+**A chapter narrates the index.** The TOC listed it. Add a `skip` regex.
+
+**Nothing is extracted.** The EPUB's TOC may be missing or broken; set
+`"require_toc": false` and lean on the skip list instead.
+
+**A name is still wrong after a lexicon entry.** Entries are matched
+case-insensitively with possessives handled, but not across hyphens or
+inside other words. Check `probe_names.py` output again — it skips names
+already covered.
+
+## Licence
+
+MIT, see [LICENSE](LICENSE). Kokoro-82M is Apache-2.0 by
+[hexgrad](https://github.com/hexgrad/kokoro); `espeak-ng` and `phonemizer`
+are GPL-3.0 and installed separately.
+
+Nothing here grants rights in the books you feed it.

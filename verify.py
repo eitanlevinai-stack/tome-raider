@@ -20,10 +20,11 @@ from common import Book, all_books
 
 SAMPLE_RATE = 24_000
 
-# Speaking pace varies by book, voice and speed -- Durant came out at 147
-# words per minute, Beard at 159 -- so the baseline is the book's own median
-# rather than a constant. A dropped chunk then shows up as a section far off
-# its neighbours, which is the thing actually worth catching.
+# Speaking pace varies by book, voice and speed -- two books narrated with
+# the same voice came out at 147 and 159 words per minute -- so the baseline
+# is the book's own median rather than a constant. A dropped chunk then
+# shows up as a section far off its neighbours, which is what is worth
+# catching.
 FALLBACK_WPM = 150
 TOLERANCE = 0.15   # a section may run 15% off the book's pace before it is
                    # suspicious

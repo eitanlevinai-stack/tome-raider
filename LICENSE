@@ -1,0 +1,43 @@
+MIT License
+
+Copyright (c) 2026 Eitan Levin
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+This licence covers the pipeline code in this repository. It does not cover
+the software it runs on, which carries its own terms:
+
+  Kokoro-82M          Apache-2.0   https://huggingface.co/hexgrad/Kokoro-82M
+  kokoro (library)    Apache-2.0   https://github.com/hexgrad/kokoro
+  misaki (G2P)        Apache-2.0   https://github.com/hexgrad/misaki
+  espeak-ng           GPL-3.0      https://github.com/espeak-ng/espeak-ng
+  phonemizer-fork     GPL-3.0      https://github.com/bootphon/phonemizer
+  ffmpeg              LGPL/GPL     https://ffmpeg.org
+
+espeak-ng and phonemizer are GPL-3.0 and Kokoro cannot phonemize English
+without them. They are installed separately by the user and are not
+distributed as part of this repository, which is why this code can be MIT
+licensed. If you intend to redistribute a bundle that includes them, take
+your own legal advice.
+
+Nothing here grants any rights in the books you feed it. Converting a book
+you own for your own listening is one thing; distributing the result is
+another, and copyright in the text is unaffected by having narrated it.
