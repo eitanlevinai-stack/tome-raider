@@ -64,6 +64,11 @@ def main() -> int:
     args = parser.parse_args()
 
     books = [Book(args.slug)] if args.slug else all_books()
+    # An empty books/ is a first run, not a finished one, and saying so is
+    # the difference between a useful message and a baffling one.
+    if not books:
+        print("no books found. Put an EPUB in books/<name>/book/ and run again")
+        return 1
     if not args.force:
         books = [b for b in books if not b.done]
     if not books:
