@@ -25,8 +25,9 @@ Go and make tea. It'll be a chaptered audiobook when you get back.
 ## Why this exists
 
 You own the book. You'd listen to it if somebody had bothered to record it.
-Sometimes nobody has. Sometimes the recording exists, costs another twenty
-quid, and reports back about what page you're on.
+Sometimes nobody has. And sometimes the recording exists but costs another
+twenty quid and you say to yourself "Why the hell should I pay for it
+again?!"
 
 So this runs a small model on your own CPU instead. Three hours of audiobook
 takes about forty minutes.
@@ -36,22 +37,22 @@ takes about forty minutes.
 Most modern text-to-speech works like a language model, predicting audio one
 token at a time. That's how they clone a voice from five seconds of you. It's
 also how they sometimes wander off and repeat a clause, or lose a sentence
-somewhere in hour nine.
+somewhere down the line.
 
 [Kokoro](https://huggingface.co/hexgrad/Kokoro-82M) works differently. It
 figures out how long everything should take, then renders it in one pass.
-What's on the page is what comes out, chapter one to chapter forty. Its
-voices are frozen tensors, so the narrator you start with is the narrator you
-finish with.
+What's on the page is what comes out, chapter one to chapter forty.
+Verbatim. Its voices are frozen tensors, so the narrator you start with is
+the narrator you finish with. Check it out at
+[huggingface.co/hexgrad/Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M).
 
 Voice cloning belongs to a different kind of model. This one ships with 54
-voices and runs several times faster than real time on a laptop, at 82M
-parameters.
+voices and runs several times faster than real time on a laptop, at just 82M
+parameters!
 
 ## Getting started
 
-You need Python 3.10+, plus two things pip has opinions about but won't
-install:
+Python 3.10+, plus:
 
 ```bash
 brew install espeak-ng ffmpeg          # macOS
@@ -103,10 +104,10 @@ flowchart LR
 ```
 
 Each stage runs on its own if you'd rather drive manually. Everything is
-resumable: finished chapters stay finished, and a chapter interrupted
-halfway leaves a `.part` file that the next run knows to redo.
+resumable: finished chapters stay finished, and an interrupted chapter
+leaves a `.part` file that the next run redoes.
 
-## Before you commit an evening to it
+## Before you run it
 
 ### Look at what it plans to read
 
@@ -123,7 +124,7 @@ my-book
 ```
 
 Chapter order and titles come from the book's own table of contents, and
-anything the TOC leaves out gets treated as front matter. That one rule
+anything the TOC leaves out gets treated as front matter. This effectively
 disposes of covers, adverts, newsletter signup pages and navigation stubs
 across most publishers. Indexes, bibliographies and lists of illustrations
 go the same way.
@@ -164,9 +165,8 @@ lexicon/*.tsv               every book you ever convert
 books/<slug>/lexicon.tsv    just this one
 ```
 
-The third column is a note to yourself in whatever spelling makes sense. The
-pipeline ignores it, and it's what lets you review the file six months later
-without deciphering IPA. Kokoro's vowels: `A`=ay, `I`=eye, `O`=oh, `W`=ow,
+The third column is a note to self in whatever spelling makes sense. The
+pipeline ignores it. Kokoro's vowels: `A`=ay, `I`=eye, `O`=oh, `W`=ow,
 `Y`=oy. `lexicon/shared.tsv` has the full tour.
 
 Names repeat. One line here often fixes several hundred utterances.
@@ -223,9 +223,8 @@ my-book
   5 sections, 4.13 h, 158 wpm, 0 needing a listen
 ```
 
-Every chapter gets measured against its own word count, calibrated to the
-book's natural pace. A chapter that came up short shows here rather than in
-your ears at bedtime.
+Every chapter is measured against its own word count, calibrated to the
+book's natural pace.
 
 For a closer look at where chunks were stitched together:
 
@@ -268,6 +267,13 @@ welcome PR.
 Kokoro speaks eight. This pipeline currently talks American English, and its
 text tidying assumes it. Opening that up is a good first contribution; see
 below.
+
+**What do I play the result on?**
+[BookPlayer](https://github.com/TortugaPower/BookPlayer) is a good open
+source iOS player for `.m4b` files, with chapter navigation, variable speed,
+a sleep timer and progress tracking. Drop the file in over AirDrop or the
+Files app. On desktop, anything that reads M4B works, including Apple Books
+and VLC.
 
 **PDFs? MOBI? AZW3?**
 EPUB today. Calibre converts most things to EPUB in one command, which is
